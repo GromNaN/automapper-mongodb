@@ -7,4 +7,5 @@ return [
     Twig\Extra\TwigExtraBundle\TwigExtraBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
     MongoDB\Bundle\MongoDBBundle::class => ['all' => true],
+    AutoMapper\Symfony\Bundle\AutoMapperBundle::class => ['all' => true],
 ];

@@ -13,7 +13,7 @@ use AutoMapper\Transformer\PropertyTransformer\PropertyTransformerSupportInterfa
 use AutoMapper\Transformer\TransformerInterface;
 use MongoDB\BSON\UTCDateTime;
 
-final class BSONToDateTimeTransformer implements PropertyTransformerInterface, PropertyTransformerSupportInterface //, TransformerFactoryInterface
+final class BSONToDateTimeTransformer implements PropertyTransformerInterface, PropertyTransformerSupportInterface // , TransformerFactoryInterface
 {
     public function transform(mixed $value, object|array $source, array $context): mixed
     {
@@ -30,7 +30,7 @@ final class BSONToDateTimeTransformer implements PropertyTransformerInterface, P
             return false;
         }
 
-        return $sourceUniqueType->getClassName() === UTCDateTime::class;
+        return UTCDateTime::class === $sourceUniqueType->getClassName();
     }
 
     public function getTransformer(TypesMatching $types, SourcePropertyMetadata $source, TargetPropertyMetadata $target, MapperMetadata $mapperMetadata): ?TransformerInterface

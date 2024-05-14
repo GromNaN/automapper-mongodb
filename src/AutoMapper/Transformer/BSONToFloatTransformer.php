@@ -12,7 +12,7 @@ use AutoMapper\Transformer\PropertyTransformer\PropertyTransformerInterface;
 use AutoMapper\Transformer\PropertyTransformer\PropertyTransformerSupportInterface;
 use MongoDB\BSON\Decimal128;
 
-final class BSONToFloatTransformer implements PropertyTransformerInterface, PropertyTransformerSupportInterface //, TransformerFactoryInterface
+final class BSONToFloatTransformer implements PropertyTransformerInterface, PropertyTransformerSupportInterface // , TransformerFactoryInterface
 {
     public function transform(mixed $value, object|array $source, array $context): float
     {
@@ -29,7 +29,7 @@ final class BSONToFloatTransformer implements PropertyTransformerInterface, Prop
             return false;
         }
 
-        return $sourceUniqueType->getClassName() === Decimal128::class;
+        return Decimal128::class === $sourceUniqueType->getClassName();
     }
 
     public function getTransformer(TypesMatching $types, SourcePropertyMetadata $source, TargetPropertyMetadata $target, MapperMetadata $mapperMetadata): ?TransformerInterface

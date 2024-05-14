@@ -6,7 +6,6 @@ use App\Model\Airbnb\Room;
 use AutoMapper\AutoMapperInterface;
 use MongoDB\Client;
 use MongoDB\Collection;
-use MongoDB\Database;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class MapperTest extends KernelTestCase

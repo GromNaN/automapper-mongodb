@@ -6,7 +6,6 @@ use App\AutoMapper\Transformer\BSONToDateTimeTransformer;
 use App\AutoMapper\Transformer\BSONToFloatTransformer;
 use App\AutoMapper\Transformer\BSONToIntTransformer;
 use AutoMapper\Attribute\MapFrom;
-use AutoMapper\Attribute\MapTo;
 
 class Room
 {

@@ -8,32 +8,54 @@ use AutoMapper\Metadata\MapperMetadata;
 use AutoMapper\Metadata\SourcePropertyMetadata;
 use AutoMapper\Metadata\TargetPropertyMetadata;
 use AutoMapper\Metadata\TypesMatching;
+use AutoMapper\Transformer\PropertyTransformer\PrioritizedPropertyTransformerInterface;
 use AutoMapper\Transformer\PropertyTransformer\PropertyTransformerInterface;
 use AutoMapper\Transformer\PropertyTransformer\PropertyTransformerSupportInterface;
 use MongoDB\BSON\Decimal128;
+use MongoDB\BSON\Int64;
+use Symfony\Component\PropertyInfo\Type;
 
-final class BSONToFloatTransformer implements PropertyTransformerInterface, PropertyTransformerSupportInterface // , TransformerFactoryInterface
+final class BSONToFloatTransformer implements PropertyTransformerInterface, PropertyTransformerSupportInterface, PrioritizedPropertyTransformerInterface
 {
     public function transform(mixed $value, object|array $source, array $context): float
     {
-        assert($value instanceof Decimal128);
+        if ($value instanceof Decimal128 || $value instanceof Int64) {
+            return intval($value->serialize());
+        } elseif (is_numeric($value)) {
+            return (float) $value;
+        }
 
-        return floatval($value->serialize());
+        throw new \InvalidArgumentException(sprintf('Unexpected "int" type, got "%s"', get_debug_type($value)));
     }
 
     public function supports(TypesMatching $types, SourcePropertyMetadata $source, TargetPropertyMetadata $target, MapperMetadata $mapperMetadata): bool
     {
-        $sourceUniqueType = $types->getSourceUniqueType();
+        $sourceType = $types->getSourceUniqueType();
 
-        if (null === $sourceUniqueType) {
+        if (!$sourceType) {
             return false;
         }
 
-        return Decimal128::class === $sourceUniqueType->getClassName();
+        // Transforms only to "float"
+        if (Type::BUILTIN_TYPE_FLOAT !== $types->getTargetUniqueType($sourceType)?->getBuiltinType()) {
+            return false;
+        }
+
+        // Convert numeric BSON types
+        if (in_array($sourceType->getClassName(), [Int64::class, Decimal128::class])) {
+            return true;
+        }
+
+        // The target type is used for generic array and stdClass
+        if (Type::BUILTIN_TYPE_FLOAT === $sourceType->getBuiltinType()) {
+            return true;
+        }
+
+        return false;
     }
 
-    public function getTransformer(TypesMatching $types, SourcePropertyMetadata $source, TargetPropertyMetadata $target, MapperMetadata $mapperMetadata): ?TransformerInterface
+    public function getPriority(): int
     {
-        // TODO: Implement getTransformer() method.
+        return 100;
     }
 }

@@ -18,14 +18,17 @@ class MapperTest extends KernelTestCase
         $this->assertNotNull($collection);
 
         $results = $collection->find([
-            '_id' => '10009999',
+            // '_id' => '10009999',
         ], [
             'typeMap' => ['root' => 'array', 'array' => 'array', 'object' => 'array'],
+            // 'typeMap' => ['root' => 'bson', 'array' => 'bson', 'object' => 'bson'],
+            'limit' => 2,
         ]);
 
         foreach ($results as $result) {
             $room = $mapper->map($result, Room::class);
-            dd($room);
+            dump($room);
+            $this->assertTrue(isset($room->calendar_last_scraped));
         }
     }
 
